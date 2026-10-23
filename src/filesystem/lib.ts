@@ -592,7 +592,10 @@ export async function tailFile(
       }
     }
 
-    const text = normalizeLineEndings(Buffer.concat(chunks).toString("utf-8"));
+    let text = normalizeLineEndings(Buffer.concat(chunks).toString("utf-8"));
+    // A trailing newline terminates the last line; it does not start a new, empty one.
+    if (text.endsWith("\n"))
+        text = text.slice(0, -1);
     return text.split("\n").slice(-numLines).join("\n");
   } finally {
     await fileHandle.close();
